@@ -1,0 +1,55 @@
+{
+    "appKeys": {
+        "KEY_CITY": 2,
+        "KEY_CONDITIONS": 1,
+        "KEY_TEMPERATURE": 0
+    },
+    "capabilities": [
+        "location"
+    ],
+    "companyName": "rushabh37@gmail.com",
+    "longName": "Weather Watch Face",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "fonts/OpenSans-Regular 28.ttf",
+                "name": "TIME_FONT_28",
+                "type": "font"
+            },
+            {
+                "file": "fonts/OpenSans-Regular.ttf",
+                "name": "WEATHER_FONT_SAN_20",
+                "type": "font"
+            },
+            {
+                "file": "images/Untitled.png",
+                "name": "ARSENAL",
+                "type": "png"
+            },
+            {
+                "file": "fonts/perfect-dos-vga-20.ttf",
+                "name": "WEATHER_FONT_20",
+                "type": "font"
+            },
+            {
+                "file": "images/background.png",
+                "name": "TEST_BITMAP",
+                "type": "png"
+            },
+            {
+                "file": "fonts/perfect-dos-vga.ttf",
+                "name": "TEST_FONT_28",
+                "type": "font"
+            }
+        ]
+    },
+    "sdkVersion": "2",
+    "shortName": "Weather Watch Face",
+    "uuid": "31901d25-afb1-4274-b5da-bda09e0404c4",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
+}
