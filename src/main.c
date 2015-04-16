@@ -1,8 +1,12 @@
 #define KEY_TEMPERATURE 0
 #define KEY_CONDITIONS 1
 #define KEY_CITY 2
+#define str(x) #x
 #include <pebble.h>
 
+static char context_char = 'c';
+  
+static void *app_context = &context_char;
 static Window *s_main_window;
 static TextLayer *s_time_layer;
 static TextLayer *s_weather_layer;
@@ -18,6 +22,7 @@ static GBitmap *s_background_bitmap;
 static char temperature_buffer[8];
 static char conditions_buffer[32];
 static char weather_layer_buffer[32];
+static char city_layer_buffer[32];
 
 static void battery_handler(BatteryChargeState new_state) {
   // Write to buffer and display
@@ -160,36 +165,43 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
-  // Read first item
-  Tuple *t = dict_read_first(iterator);
-
-  // For all items
-  while(t != NULL) {
-    switch(t->key) {
-      case KEY_TEMPERATURE:
-      snprintf(temperature_buffer, sizeof(temperature_buffer), "%dF", (int)t->value->int32);
-      break;
-      case KEY_CONDITIONS:
-      snprintf(conditions_buffer, sizeof(conditions_buffer), "%s", t->value->cstring);
-      break;
-      case KEY_CITY:
-      text_layer_set_text(s_city_layer, t->value->cstring);
-      break;
-      default:
-      APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
-      break;
-    }
-    // Look for next item
-    t = dict_read_next(iterator);
-  }
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Inbox Received!");
+  if(app_context == context) {
+    
+    // Read first item
+    Tuple *t = dict_read_first(iterator);
   
-  // Assemble full string and display
-  snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s, %s", temperature_buffer, conditions_buffer);
-  text_layer_set_text(s_weather_layer, weather_layer_buffer);
+    // For all items
+    // Whenever we set the text layer use copy the string to local instance. 
+    // Using dictionary pointer might result in unexpected update in the value
+    while(t != NULL) {
+      switch(t->key) {
+        case KEY_TEMPERATURE:
+          snprintf(temperature_buffer, sizeof(temperature_buffer), "%dF", (int)t->value->int32);
+          break;
+        case KEY_CONDITIONS:
+          snprintf(conditions_buffer, sizeof(conditions_buffer), "%s", t->value->cstring);
+          break;
+        case KEY_CITY:
+          snprintf(city_layer_buffer, sizeof(city_layer_buffer), "%s", t->value->cstring);
+          text_layer_set_text(s_city_layer, city_layer_buffer);
+          break;
+        default:
+          APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
+          break;
+      }
+      // Look for next item
+      t = dict_read_next(iterator);
+    }
+    // Assemble full string and display
+    snprintf(weather_layer_buffer, sizeof(weather_layer_buffer), "%s, %s", temperature_buffer, conditions_buffer);
+    text_layer_set_text(s_weather_layer, weather_layer_buffer);
+  }
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
   APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
+  APP_LOG(APP_LOG_LEVEL_ERROR, str(reason));
 }
 
 static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
@@ -223,6 +235,8 @@ static void init() {
   // SECOND_UNIT uses lot of watch power hence we use MINUTE_UNIT
   tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
   
+  app_message_set_context(app_context);
+  
   // Register callbacks
   app_message_register_inbox_received(inbox_received_callback);
   app_message_register_inbox_dropped(inbox_dropped_callback);
@@ -242,6 +256,7 @@ static void deinit() {
 
 int main(void) {
   init();
+  APP_LOG(APP_LOG_LEVEL_INFO, "APP INIT COMPETED");
   app_event_loop();
   deinit();
 }
