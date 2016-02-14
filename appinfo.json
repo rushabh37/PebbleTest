@@ -13,6 +13,16 @@
     "resources": {
         "media": [
             {
+                "file": "images/Untitled.png",
+                "name": "ARSENAL",
+                "type": "png"
+            },
+            {
+                "file": "images/background.png",
+                "name": "TEST_BITMAP",
+                "type": "png"
+            },
+            {
                 "file": "fonts/OpenSans-Regular 28.ttf",
                 "name": "TIME_FONT_34",
                 "type": "font"
@@ -23,19 +33,9 @@
                 "type": "font"
             },
             {
-                "file": "images/Untitled.png",
-                "name": "ARSENAL",
-                "type": "png"
-            },
-            {
                 "file": "fonts/perfect-dos-vga-20.ttf",
                 "name": "WEATHER_FONT_20",
                 "type": "font"
-            },
-            {
-                "file": "images/background.png",
-                "name": "TEST_BITMAP",
-                "type": "png"
             },
             {
                 "file": "fonts/perfect-dos-vga.ttf",
